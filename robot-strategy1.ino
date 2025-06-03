@@ -1,7 +1,7 @@
 #include <Servo.h>
 #include <AceRoutine.h>
 
-// strategy1: 自己走自己的 加被動攻擊 加超音波可能沒有什麼軟用的干擾
+// strategy1: 自己rotate 加被動攻擊 加超音波可能沒有什麼軟用的干擾
 
 using namespace ace_routine;
 
@@ -29,29 +29,25 @@ void setup() {
   pinMode(trigPins[2], OUTPUT);
   pinMode(trigPins[3], OUTPUT);
 }
-/*
-COROUTINE(foot) {
+
+
+COROUTINE(move) {
   COROUTINE_LOOP(){
     // <90 順轉 
     // >90 逆轉
-    motors[0].write(45);  // 前左輪
-    motors[2].write(45);  // 後左輪
-    motors[1].write(135); // 前右輪
-    motors[3].write(135); // 後右輪
-    COROUTINE_YIELD();    // handsoff
-  }
-}*/
-
-
-COROUTINE(rotate) {
-  COROUTINE_LOOP(){
-    // <90 順轉 
-    // >90 逆轉
-    motors[0].write(145);  // 前左輪
-    motors[2].write(145);  // 後左輪
-    motors[1].write(145); // 前右輪
-    motors[3].write(145); // 後右輪
-    COROUTINE_YIELD();    // handsoff
+    // 只能20~160
+    // forward
+    motors[0].write(160);  // 前左輪
+    motors[2].write(160);  // 後左輪
+    motors[1].write(20); // 前右輪
+    motors[3].write(20); // 後右輪
+    COROUTINE_DELAY(2800);
+    // reverse
+    motors[0].write(20);  // 前左輪
+    motors[2].write(20);  // 後左輪
+    motors[1].write(160); // 前右輪
+    motors[3].write(160); // 後右輪
+    COROUTINE_DELAY(2800);
   }
 }
 
@@ -60,10 +56,10 @@ COROUTINE(kick) {
   COROUTINE_LOOP(){
     motors[4].write(0);   // 右邊攻擊
     motors[5].write(0);   // 左邊攻擊
-    COROUTINE_DELAY(800);
+    COROUTINE_DELAY(500);
     motors[4].write(180); // 右邊攻擊
     motors[5].write(180); // 左邊攻擊
-    COROUTINE_DELAY(800);
+    COROUTINE_DELAY(600);
   }
 }
 
@@ -83,8 +79,8 @@ COROUTINE(air_attack) {
 
 void loop() {
   //foot.runCoroutine();
-  kick.runCoroutine();
+  //kick.runCoroutine();
   air_attack.runCoroutine();
-  rotate.runCoroutine();
+  move.runCoroutine();
 }
 
